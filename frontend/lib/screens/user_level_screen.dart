@@ -11,55 +11,105 @@ class UserLevelScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Your Relationship')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'What is your relationship\nto this language?',
-              style: GoogleFonts.poppins(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-                height: 1.3,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: AppColors.lightGradient,
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'What is your relationship\nto this language?',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.notoSerif(
+                        fontSize: 30,
+                        fontStyle: FontStyle.italic,
+                        color: AppColors.textDark,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+                    _LevelOption(
+                      title: "I'm new to this language",
+                      subtitle: 'Beginner',
+                      onTap: () {
+                        ref.read(userLevelProvider.notifier).state = 'beginner';
+                        context.go('/home');
+                      },
+                    ),
+                    const _DiamondDivider(),
+                    _LevelOption(
+                      title: "I've heard or used it a little",
+                      subtitle: 'Intermediate',
+                      onTap: () {
+                        ref.read(userLevelProvider.notifier).state = 'intermediate';
+                        context.go('/quick-check');
+                      },
+                    ),
+                    const _DiamondDivider(),
+                    _LevelOption(
+                      title: 'I grew up with this language',
+                      subtitle: 'Native Speaker',
+                      onTap: () {
+                        ref.read(userLevelProvider.notifier).state = 'native';
+                        context.go('/native-intent');
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 8),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LevelOption extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _LevelOption({
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: Column(
+          children: [
             Text(
-              'This helps us personalize your experience.',
-              style: GoogleFonts.poppins(fontSize: 14, color: AppColors.textSecondary),
+              title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.notoSerif(
+                fontSize: 20,
+                color: AppColors.textDark,
+              ),
             ),
-            const SizedBox(height: 32),
-            _LevelOptionCard(
-              icon: Icons.school,
-              title: "I'm new to this language",
-              subtitle: 'Beginner',
-              onTap: () {
-                ref.read(userLevelProvider.notifier).state = 'beginner';
-                context.go('/home');
-              },
-            ),
-            const SizedBox(height: 16),
-            _LevelOptionCard(
-              icon: Icons.hearing,
-              title: "I've heard or used it a little",
-              subtitle: 'Intermediate',
-              onTap: () {
-                ref.read(userLevelProvider.notifier).state = 'intermediate';
-                context.go('/quick-check');
-              },
-            ),
-            const SizedBox(height: 16),
-            _LevelOptionCard(
-              icon: Icons.favorite,
-              title: 'I grew up with this language',
-              subtitle: 'Native Speaker',
-              onTap: () {
-                ref.read(userLevelProvider.notifier).state = 'native';
-                context.go('/native-intent');
-              },
+            const SizedBox(height: 6),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.notoSerif(
+                fontSize: 14,
+                fontStyle: FontStyle.italic,
+                color: AppColors.textDarkMuted,
+              ),
             ),
           ],
         ),
@@ -68,67 +118,42 @@ class UserLevelScreen extends ConsumerWidget {
   }
 }
 
-class _LevelOptionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  const _LevelOptionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
+class _DiamondDivider extends StatelessWidget {
+  const _DiamondDivider();
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Row(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(icon, size: 28, color: AppColors.primary),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(Icons.chevron_right, color: AppColors.textSecondary),
-            ],
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 1,
+            color: AppColors.textDark.withValues(alpha: 0.10),
           ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Transform.rotate(
+            angle: 0.785398, // 45 degrees in radians
+            child: Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.textDark.withValues(alpha: 0.10),
+                  width: 1,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: 1,
+            color: AppColors.textDark.withValues(alpha: 0.10),
+          ),
+        ),
+      ],
     );
   }
 }

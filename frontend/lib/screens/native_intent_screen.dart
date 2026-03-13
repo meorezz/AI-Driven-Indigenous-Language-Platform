@@ -10,39 +10,90 @@ class NativeIntentScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Your Goal')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'What would you\nlike to do?',
-              style: GoogleFonts.poppins(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-                height: 1.3,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: AppColors.lightGradient,
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'How would you\nlike to help?',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.notoSerif(
+                        fontSize: 30,
+                        fontStyle: FontStyle.italic,
+                        color: AppColors.textDark,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+                    _IntentOption(
+                      title: 'Explore the language',
+                      subtitle: 'Learn and discover',
+                      onTap: () => context.go('/home'),
+                    ),
+                    const _DiamondDivider(),
+                    _IntentOption(
+                      title: 'Help preserve the language',
+                      subtitle: 'Contribute',
+                      onTap: () => context.go('/contribute'),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 8),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _IntentOption extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _IntentOption({
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: Column(
+          children: [
             Text(
-              'As a native speaker, you can explore or help preserve your language.',
-              style: GoogleFonts.poppins(fontSize: 14, color: AppColors.textSecondary),
+              title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.notoSerif(
+                fontSize: 20,
+                color: AppColors.textDark,
+              ),
             ),
-            const SizedBox(height: 32),
-            _IntentCard(
-              icon: Icons.explore,
-              title: 'Explore the language',
-              description: 'Browse words, categories, and practice pronunciation.',
-              onTap: () => context.go('/home'),
-            ),
-            const SizedBox(height: 16),
-            _IntentCard(
-              icon: Icons.volunteer_activism,
-              title: 'Help preserve the language',
-              description: 'Contribute recordings, words, and translations.',
-              onTap: () => context.go('/contribute'),
+            const SizedBox(height: 6),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.notoSerif(
+                fontSize: 14,
+                fontStyle: FontStyle.italic,
+                color: AppColors.textDarkMuted,
+              ),
             ),
           ],
         ),
@@ -51,67 +102,42 @@ class NativeIntentScreen extends ConsumerWidget {
   }
 }
 
-class _IntentCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final VoidCallback onTap;
-
-  const _IntentCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.onTap,
-  });
+class _DiamondDivider extends StatelessWidget {
+  const _DiamondDivider();
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Row(
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(icon, size: 32, color: AppColors.primary),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.poppins(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      description,
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(Icons.chevron_right, color: AppColors.textSecondary),
-            ],
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 1,
+            color: AppColors.textDark.withValues(alpha: 0.10),
           ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Transform.rotate(
+            angle: 0.785398, // 45 degrees
+            child: Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.textDark.withValues(alpha: 0.10),
+                  width: 1,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: 1,
+            color: AppColors.textDark.withValues(alpha: 0.10),
+          ),
+        ),
+      ],
     );
   }
 }

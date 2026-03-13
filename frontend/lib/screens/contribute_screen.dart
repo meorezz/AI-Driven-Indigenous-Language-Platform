@@ -33,29 +33,107 @@ class _ContributeScreenState extends ConsumerState<ContributeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Contribute'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.textLight),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'Contribute',
+          style: GoogleFonts.notoSerif(
+            fontSize: 24,
+            fontStyle: FontStyle.italic,
+            color: AppColors.textLight,
+            letterSpacing: 4.8,
+          ),
+        ),
+        centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Colors.white,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          indicatorColor: AppColors.textCream,
+          indicatorWeight: 2,
+          labelColor: AppColors.textCream,
+          unselectedLabelColor: AppColors.textCream.withValues(alpha: 0.5),
+          labelStyle: GoogleFonts.notoSerif(
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+          ),
+          unselectedLabelStyle: GoogleFonts.notoSerif(fontSize: 13),
           tabs: const [
             Tab(text: 'Add Pronunciation'),
             Tab(text: 'Suggest a Word'),
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          _AddPronunciationTab(),
-          _SuggestWordTab(),
-        ],
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: AppColors.primaryGradient,
+        ),
+        child: SafeArea(
+          child: TabBarView(
+            controller: _tabController,
+            children: const [
+              _AddPronunciationTab(),
+              _SuggestWordTab(),
+            ],
+          ),
+        ),
       ),
     );
   }
+}
+
+// ============================================================
+// Shared styling helpers
+// ============================================================
+
+InputDecoration _themedInputDecoration(String label) {
+  return InputDecoration(
+    labelText: label,
+    labelStyle: GoogleFonts.notoSerif(
+      color: AppColors.textCream.withValues(alpha: 0.7),
+      fontSize: 14,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(
+        color: AppColors.textCream.withValues(alpha: 0.3),
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(
+        color: AppColors.textCream.withValues(alpha: 0.6),
+        width: 1.5,
+      ),
+    ),
+    filled: false,
+  );
+}
+
+DropdownButtonFormField<T> _themedDropdown<T>({
+  required T? value,
+  required String label,
+  required List<DropdownMenuItem<T>> items,
+  required ValueChanged<T?> onChanged,
+}) {
+  return DropdownButtonFormField<T>(
+    value: value,
+    decoration: _themedInputDecoration(label),
+    dropdownColor: AppColors.gradientEnd,
+    style: GoogleFonts.notoSerif(
+      color: AppColors.textCream,
+      fontSize: 15,
+    ),
+    iconEnabledColor: AppColors.textCream.withValues(alpha: 0.7),
+    items: items,
+    onChanged: onChanged,
+  );
 }
 
 // ============================================================
@@ -159,37 +237,39 @@ class _AddPronunciationTabState extends ConsumerState<_AddPronunciationTab> {
     final categoriesAsync = ref.watch(categoriesProvider);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Record a pronunciation',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.notoSerif(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: AppColors.textCream,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Select a word and record your pronunciation.',
-            style: GoogleFonts.poppins(fontSize: 14, color: AppColors.textSecondary),
+            style: GoogleFonts.notoSerif(
+              fontSize: 14,
+              color: AppColors.textCream.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 24),
           // Category dropdown
           categoriesAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const Center(
+              child: CircularProgressIndicator(color: AppColors.textCream),
+            ),
             error: (_, __) => Text(
               'Failed to load categories',
-              style: GoogleFonts.poppins(color: AppColors.error),
+              style: GoogleFonts.notoSerif(color: AppColors.error),
             ),
-            data: (categories) => DropdownButtonFormField<String>(
+            data: (categories) => _themedDropdown<String>(
               value: _selectedCategoryId,
-              decoration: InputDecoration(
-                labelText: 'Category',
-                labelStyle: GoogleFonts.poppins(),
-              ),
+              label: 'Category',
               items: categories.map((c) {
                 return DropdownMenuItem(value: c.id, child: Text(c.name));
               }).toList(),
@@ -204,15 +284,14 @@ class _AddPronunciationTabState extends ConsumerState<_AddPronunciationTab> {
           if (_loadingConcepts)
             const Padding(
               padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(
+                child: CircularProgressIndicator(color: AppColors.textCream),
+              ),
             )
           else if (_concepts.isNotEmpty)
-            DropdownButtonFormField<Concept>(
+            _themedDropdown<Concept>(
               value: _selectedConcept,
-              decoration: InputDecoration(
-                labelText: 'Word',
-                labelStyle: GoogleFonts.poppins(),
-              ),
+              label: 'Word',
               items: _concepts.map((c) {
                 return DropdownMenuItem(
                   value: c,
@@ -233,13 +312,23 @@ class _AddPronunciationTabState extends ConsumerState<_AddPronunciationTab> {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: _isRecording ? AppColors.error : AppColors.primary,
+                        color: _isRecording
+                            ? AppColors.error
+                            : Colors.transparent,
                         shape: BoxShape.circle,
+                        border: Border.all(
+                          color: _isRecording
+                              ? AppColors.error
+                              : AppColors.textCream.withValues(alpha: 0.6),
+                          width: 2,
+                        ),
                       ),
                       child: Icon(
                         _isRecording ? Icons.stop : Icons.mic,
                         size: 36,
-                        color: Colors.white,
+                        color: _isRecording
+                            ? Colors.white
+                            : AppColors.textCream.withValues(alpha: 0.9),
                       ),
                     ),
                   ),
@@ -250,9 +339,11 @@ class _AddPronunciationTabState extends ConsumerState<_AddPronunciationTab> {
                         : _recordingPath != null
                             ? 'Recording saved'
                             : 'Tap to record',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.notoSerif(
                       fontSize: 14,
-                      color: _isRecording ? AppColors.error : AppColors.textSecondary,
+                      color: _isRecording
+                          ? AppColors.error
+                          : AppColors.textCream.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
@@ -265,13 +356,33 @@ class _AddPronunciationTabState extends ConsumerState<_AddPronunciationTab> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _isSubmitting ? null : _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.textCream.withValues(alpha: 0.2),
+                    foregroundColor: AppColors.textCream,
+                    disabledBackgroundColor:
+                        AppColors.textCream.withValues(alpha: 0.1),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 0,
+                  ),
                   child: _isSubmitting
                       ? const SizedBox(
                           height: 20,
                           width: 20,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          child: CircularProgressIndicator(
+                            color: AppColors.textCream,
+                            strokeWidth: 2,
+                          ),
                         )
-                      : const Text('Submit'),
+                      : Text(
+                          'Submit',
+                          style: GoogleFonts.notoSerif(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                 ),
               ),
           ],
@@ -381,69 +492,76 @@ class _SuggestWordTabState extends ConsumerState<_SuggestWordTab> {
     final categoriesAsync = ref.watch(categoriesProvider);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Suggest a new word',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.notoSerif(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: AppColors.textCream,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Help grow the dictionary by suggesting words.',
-            style: GoogleFonts.poppins(fontSize: 14, color: AppColors.textSecondary),
+            style: GoogleFonts.notoSerif(
+              fontSize: 14,
+              color: AppColors.textCream.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 24),
           // Category dropdown
           categoriesAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const Center(
+              child: CircularProgressIndicator(color: AppColors.textCream),
+            ),
             error: (_, __) => Text(
               'Failed to load categories',
-              style: GoogleFonts.poppins(color: AppColors.error),
+              style: GoogleFonts.notoSerif(color: AppColors.error),
             ),
-            data: (categories) => DropdownButtonFormField<String>(
+            data: (categories) => _themedDropdown<String>(
               value: _selectedCategoryId,
-              decoration: InputDecoration(
-                labelText: 'Category',
-                labelStyle: GoogleFonts.poppins(),
-              ),
+              label: 'Category',
               items: categories.map((c) {
                 return DropdownMenuItem(value: c.id, child: Text(c.name));
               }).toList(),
-              onChanged: (value) => setState(() => _selectedCategoryId = value),
+              onChanged: (value) =>
+                  setState(() => _selectedCategoryId = value),
             ),
           ),
           const SizedBox(height: 16),
           // Word input
           TextField(
             controller: _wordController,
-            decoration: InputDecoration(
-              labelText: 'Word (in indigenous language)',
-              labelStyle: GoogleFonts.poppins(),
+            style: GoogleFonts.notoSerif(
+              color: AppColors.textCream,
+              fontSize: 15,
             ),
+            cursorColor: AppColors.textCream,
+            decoration: _themedInputDecoration('Word (in indigenous language)'),
           ),
           const SizedBox(height: 16),
           // Translation input
           TextField(
             controller: _translationController,
-            decoration: InputDecoration(
-              labelText: 'Translation (in English)',
-              labelStyle: GoogleFonts.poppins(),
+            style: GoogleFonts.notoSerif(
+              color: AppColors.textCream,
+              fontSize: 15,
             ),
+            cursorColor: AppColors.textCream,
+            decoration: _themedInputDecoration('Translation (in English)'),
           ),
           const SizedBox(height: 24),
           // Optional audio recording
           Text(
             'Optional: Record pronunciation',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.notoSerif(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary,
+              color: AppColors.textCream.withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 12),
@@ -456,13 +574,23 @@ class _SuggestWordTabState extends ConsumerState<_SuggestWordTab> {
                     width: 64,
                     height: 64,
                     decoration: BoxDecoration(
-                      color: _isRecording ? AppColors.error : AppColors.secondary,
+                      color: _isRecording
+                          ? AppColors.error
+                          : Colors.transparent,
                       shape: BoxShape.circle,
+                      border: Border.all(
+                        color: _isRecording
+                            ? AppColors.error
+                            : AppColors.textCream.withValues(alpha: 0.6),
+                        width: 2,
+                      ),
                     ),
                     child: Icon(
                       _isRecording ? Icons.stop : Icons.mic,
                       size: 28,
-                      color: Colors.white,
+                      color: _isRecording
+                          ? Colors.white
+                          : AppColors.textCream.withValues(alpha: 0.9),
                     ),
                   ),
                 ),
@@ -473,9 +601,11 @@ class _SuggestWordTabState extends ConsumerState<_SuggestWordTab> {
                       : _recordingPath != null
                           ? 'Recording saved'
                           : 'Tap to record',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.notoSerif(
                     fontSize: 13,
-                    color: _isRecording ? AppColors.error : AppColors.textSecondary,
+                    color: _isRecording
+                        ? AppColors.error
+                        : AppColors.textCream.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -487,13 +617,33 @@ class _SuggestWordTabState extends ConsumerState<_SuggestWordTab> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _isSubmitting ? null : _submit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.textCream.withValues(alpha: 0.2),
+                foregroundColor: AppColors.textCream,
+                disabledBackgroundColor:
+                    AppColors.textCream.withValues(alpha: 0.1),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                elevation: 0,
+              ),
               child: _isSubmitting
                   ? const SizedBox(
                       height: 20,
                       width: 20,
-                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        color: AppColors.textCream,
+                        strokeWidth: 2,
+                      ),
                     )
-                  : const Text('Submit'),
+                  : Text(
+                      'Submit',
+                      style: GoogleFonts.notoSerif(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
             ),
           ),
         ],

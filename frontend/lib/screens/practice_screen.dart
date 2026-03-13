@@ -98,38 +98,82 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen>
     final conceptAsync = ref.watch(_practiceConceptProvider(widget.conceptId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Practice')),
-      body: conceptAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.error_outline, size: 48, color: AppColors.error),
-                const SizedBox(height: 16),
-                Text(
-                  'Failed to load concept',
-                  style: GoogleFonts.poppins(fontSize: 16, color: AppColors.textPrimary),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => ref.invalidate(_practiceConceptProvider(widget.conceptId)),
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.textLight),
+          onPressed: () => context.pop(),
+        ),
+        title: Text(
+          'Practice',
+          style: GoogleFonts.notoSerif(
+            fontSize: 24,
+            fontStyle: FontStyle.italic,
+            color: AppColors.textLight,
+            letterSpacing: 4.8,
           ),
         ),
-        data: (concept) => _buildPracticeContent(concept),
+        centerTitle: true,
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: AppColors.primaryGradient,
+        ),
+        child: SafeArea(
+          child: conceptAsync.when(
+            loading: () => const Center(
+              child: CircularProgressIndicator(color: AppColors.textCream),
+            ),
+            error: (error, stack) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: AppColors.textCream.withValues(alpha: 0.7),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Failed to load concept',
+                      style: GoogleFonts.notoSerif(
+                        fontSize: 16,
+                        color: AppColors.textCream,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    OutlinedButton(
+                      onPressed: () =>
+                          ref.invalidate(_practiceConceptProvider(widget.conceptId)),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.textCream,
+                        side: const BorderSide(color: AppColors.textCream),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text('Retry', style: GoogleFonts.notoSerif()),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            data: (concept) => _buildPracticeContent(concept),
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildPracticeContent(Concept concept) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
       child: Column(
         children: [
           const SizedBox(height: 16),
@@ -137,29 +181,41 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen>
           Text(
             concept.word,
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.notoSerif(
               fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: AppColors.textCream,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             concept.translation,
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.notoSerif(
               fontSize: 18,
-              color: AppColors.textSecondary,
+              color: AppColors.textCream.withValues(alpha: 0.7),
             ),
           ),
           if (concept.audioUrl != null && concept.audioUrl!.isNotEmpty) ...[
             const SizedBox(height: 16),
-            TextButton.icon(
-              onPressed: () => AudioService.playUrl(concept.audioUrl!),
-              icon: const Icon(Icons.volume_up, color: AppColors.primary),
-              label: Text(
-                'Listen first',
-                style: GoogleFonts.poppins(color: AppColors.primary),
+            GestureDetector(
+              onTap: () => AudioService.playUrl(concept.audioUrl!),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.volume_up,
+                    color: AppColors.textCream.withValues(alpha: 0.7),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Listen first',
+                    style: GoogleFonts.notoSerif(
+                      color: AppColors.textCream.withValues(alpha: 0.7),
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -201,27 +257,40 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen>
                 color: isRecording
                     ? AppColors.error
                     : isProcessing
-                        ? AppColors.textSecondary
-                        : AppColors.primary,
+                        ? AppColors.textDarkMuted
+                        : Colors.transparent,
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: (isRecording ? AppColors.error : AppColors.primary)
-                        .withValues(alpha: 0.3),
-                    blurRadius: isRecording ? 24 : 16,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                border: Border.all(
+                  color: isRecording
+                      ? AppColors.error
+                      : AppColors.textCream.withValues(alpha: 0.6),
+                  width: 2,
+                ),
+                boxShadow: isRecording
+                    ? [
+                        BoxShadow(
+                          color: AppColors.error.withValues(alpha: 0.3),
+                          blurRadius: 24,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : [],
               ),
               child: isProcessing
                   ? const Padding(
                       padding: EdgeInsets.all(30),
                       child: CircularProgressIndicator(
-                        color: Colors.white,
+                        color: AppColors.textCream,
                         strokeWidth: 3,
                       ),
                     )
-                  : const Icon(Icons.mic, size: 44, color: Colors.white),
+                  : Icon(
+                      Icons.mic,
+                      size: 44,
+                      color: isRecording
+                          ? Colors.white
+                          : AppColors.textCream.withValues(alpha: 0.9),
+                    ),
             ),
           );
         },
@@ -244,9 +313,9 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen>
 
     return Text(
       label,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.notoSerif(
         fontSize: 14,
-        color: AppColors.textSecondary,
+        color: AppColors.textCream.withValues(alpha: 0.5),
       ),
     );
   }
@@ -257,7 +326,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen>
     if (score >= 85) {
       scoreColor = AppColors.success;
     } else if (score >= 70) {
-      scoreColor = AppColors.accent;
+      scoreColor = AppColors.warning;
     } else {
       scoreColor = AppColors.error;
     }
@@ -267,7 +336,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen>
         // Score
         Text(
           '$score%',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.notoSerif(
             fontSize: 48,
             fontWeight: FontWeight.bold,
             color: scoreColor,
@@ -277,9 +346,9 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen>
         Text(
           _feedback ?? '',
           textAlign: TextAlign.center,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.notoSerif(
             fontSize: 15,
-            color: AppColors.textSecondary,
+            color: AppColors.textCream.withValues(alpha: 0.7),
             height: 1.5,
           ),
         ),
@@ -291,24 +360,38 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen>
               child: OutlinedButton(
                 onPressed: _tryAgain,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: const BorderSide(color: AppColors.primary),
+                  foregroundColor: AppColors.textCream,
+                  side: BorderSide(
+                    color: AppColors.textCream.withValues(alpha: 0.6),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text('Try Again', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                child: Text(
+                  'Try Again',
+                  style: GoogleFonts.notoSerif(fontWeight: FontWeight.w600),
+                ),
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
-                  // Go back to the category list
-                  context.pop();
-                },
-                child: const Text('Next Word'),
+                onPressed: () => context.pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.textCream.withValues(alpha: 0.2),
+                  foregroundColor: AppColors.textCream,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'Next Word',
+                  style: GoogleFonts.notoSerif(fontWeight: FontWeight.w600),
+                ),
               ),
             ),
           ],

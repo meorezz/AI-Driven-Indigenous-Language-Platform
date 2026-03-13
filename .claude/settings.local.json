@@ -26,7 +26,10 @@
       "Bash(where psql:*)",
       "Bash(emulator -list-avds)",
       "Bash(\"$LOCALAPPDATA/Android/Sdk/emulator/emulator\" -list-avds)",
-      "Bash(\"$LOCALAPPDATA/Android/Sdk/platform-tools/adb\" devices:*)"
+      "Bash(\"$LOCALAPPDATA/Android/Sdk/platform-tools/adb\" devices:*)",
+      "Bash(\"C:\\\\Users\\\\USER\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\emulator\\\\emulator.exe\" -list-avds)",
+      "Bash(\"C:\\\\Users\\\\USER\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" wait-for-device:*)",
+      "Bash(\"C:\\\\Users\\\\USER\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" shell:*)"
     ]
   }
 }
