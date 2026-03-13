@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../theme/app_theme.dart';
-import '../providers/app_providers.dart';
+
 import '../models/concept.dart';
-import '../services/supabase_service.dart';
+import '../providers/app_providers.dart';
 import '../services/audio_service.dart';
+import '../services/supabase_service.dart';
+import '../theme/app_theme.dart';
 
 class ContributeScreen extends ConsumerStatefulWidget {
   const ContributeScreen({super.key});
@@ -123,7 +124,7 @@ DropdownButtonFormField<T> _themedDropdown<T>({
   required ValueChanged<T?> onChanged,
 }) {
   return DropdownButtonFormField<T>(
-    value: value,
+    initialValue: value,
     decoration: _themedInputDecoration(label),
     dropdownColor: AppColors.gradientEnd,
     style: GoogleFonts.notoSerif(
