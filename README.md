@@ -134,8 +134,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Contact
 
 For questions, partnerships, or collaboration opportunities:
-- Email: team@indigenous-language-platform.com
-- GitHub Issues: [Report bugs or request features](https://github.com/your-username/AI-Driven-Indigenous-Language-Platform/issues)
+- Email: meorhazrul69@gmail.com
+- GitHub Issues: [Report bugs or request features](https://github.com/meorezz/AI-Driven-Indigenous-Language-Platform/issues)
 
 ---
 
