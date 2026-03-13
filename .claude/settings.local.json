@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pandoc \"C:\\\\Users\\\\USER\\\\Downloads\\\\AI-Driven Indigenous Language Platform.docx\" -o /tmp/platform-spec.md)",
+      "Bash(python scripts/office/unpack.py \"C:/Users/USER/Downloads/AI-Driven Indigenous Language Platform.docx\" /tmp/docx-unpacked/)",
+      "Bash(pip install:*)",
+      "Bash(python -c \":*)",
+      "Bash(npm -v)",
+      "Read(//c/Users/USER/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/4fac27ad-7bc2-4c66-9fe2-da0baed6f54c/2fb9310a-cc45-42ac-8645-0a1dc5bb994d/skills/docx/**)",
+      "Bash(pandoc \"C:\\\\Users\\\\USER\\\\Downloads\\\\AI-Driven Indigenous Language Platform.docx\" -o output.md)",
+      "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\USER\\\\Downloads\\\\AI-Driven Indigenous Language Platform.docx\" unpacked/)",
+      "Bash(python -X utf8 -c \":*)",
+      "Bash(flutter --version)",
+      "Bash(flutter create:*)",
+      "Bash(flutter pub:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter emulators:*)",
+      "Bash(flutter run:*)",
+      "Bash(flutter devices:*)",
+      "Bash(curl -s -X POST \"https://ooennfcrqjgybixamntn.supabase.co/rest/v1/regions\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vZW5uZmNycWpneWJpeGFtbnRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3OTgxMTIsImV4cCI6MjA4NzM3NDExMn0.Msx_7BY6GR--GfMNkMZefHpnkLrwyWHBOnCmJKnPOi0\" -H \"Content-Type: application/json\")",
+      "Bash(curl -s \"https://ooennfcrqjgybixamntn.supabase.co/rest/v1/regions?select=*\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vZW5uZmNycWpneWJpeGFtbnRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3OTgxMTIsImV4cCI6MjA4NzM3NDExMn0.Msx_7BY6GR--GfMNkMZefHpnkLrwyWHBOnCmJKnPOi0\")",
+      "Bash(clip)",
+      "Bash(claude mcp:*)",
+      "mcp__mcp-registry__search_mcp_registry",
+      "Bash(npx supabase:*)",
+      "Bash(where psql:*)",
+      "Bash(emulator -list-avds)",
+      "Bash(\"$LOCALAPPDATA/Android/Sdk/emulator/emulator\" -list-avds)",
+      "Bash(\"$LOCALAPPDATA/Android/Sdk/platform-tools/adb\" devices:*)"
+    ]
+  }
+}

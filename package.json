@@ -1,0 +1,15 @@
+{
+  "name": "indigenous-language-platform",
+  "version": "1.0.0",
+  "description": "AI-Driven Indigenous Language Preservation & Learning Platform",
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && node src/server.js",
+    "frontend": "cd frontend && npx expo start",
+    "setup": "cd backend && npm install && cd ../frontend && npm install",
+    "seed": "cd backend && node src/seed.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
