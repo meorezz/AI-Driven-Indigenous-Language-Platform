@@ -189,7 +189,7 @@ categories ──┐             │
    npm start
    ```
 
-3. **Setup Frontend**
+3. **Setup Frontend @ Run The App**
    ```bash
    cd frontend
    flutter pub get
@@ -242,4 +242,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-*Preserving indigenous languages of Malaysia through technology — one word at a time.*
+*Preserving indigenous languages of East Malaysia through technology — one word at a time.*
