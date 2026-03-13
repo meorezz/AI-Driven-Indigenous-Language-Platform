@@ -42,3 +42,15 @@ android {
 flutter {
     source = "../.."
 }
+// Fix for plugins missing compileSdkVersion (e.g. app_links)
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty("android")) {
+            project.android {
+                if (compileSdkVersion == null) {
+                    compileSdkVersion 34
+                }
+            }
+        }
+    }
+}
